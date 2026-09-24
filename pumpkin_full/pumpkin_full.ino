@@ -164,26 +164,26 @@ const float GAP_S = 0.035;
 struct Note { int tone; int units; };
 
 // original tune
-Note melodieOrig[] = {
+Note melodyOrig[] = {
   {C5, 2}, {C5, 1}, {C5, 1}, {E5, 2}, {C5, 2}, {D5, 2}, {AIS4, 3}, {R, 1},
   {C5, 2}, {C5, 2}, {C5, 1}, {C5, 1}, {C5, 1}, {C5, 1}, {B4, 2}, {C5, 3}, {R, 1},
   {C5, 2}, {C5, 1}, {C5, 1}, {E5, 2}, {C5, 2}, {D5, 2}, {AIS4, 3}, {R, 4},
 };
 
 // slow chromatic descent, eerie
-Note melodieCreep[] = {
+Note melodyCreep[] = {
   {G5, 3}, {FIS5, 2}, {F5, 2}, {E5, 2}, {DIS5, 2}, {D5, 3}, {R, 1},
   {C5, 4}, {R, 2}, {C4, 5}, {R, 4},
 };
 
 // devil's interval alarm
-Note melodieTritone[] = {
+Note melodyTritone[] = {
   {C5, 1}, {FIS5, 1}, {C5, 1}, {FIS5, 1}, {C5, 1}, {FIS5, 1}, {C5, 2}, {R, 1},
   {C5, 1}, {FIS5, 1}, {C5, 1}, {FIS5, 1}, {C5, 3}, {R, 2},
 };
 
 // witch cackle, quick up-down run
-Note melodieCackle[] = {
+Note melodyCackle[] = {
   {C5, 1}, {D5, 1}, {E5, 1}, {F5, 1}, {G5, 1}, {FIS5, 1}, {F5, 1}, {E5, 1}, {D5, 1}, {C5, 1}, {R, 1},
   {G5, 2}, {FIS5, 2}, {G5, 3}, {R, 2},
 };
@@ -192,16 +192,12 @@ Note melodieCackle[] = {
 // structure verified against github.com/contrab/toccata565 (standard
 // pitches.h frequencies match exactly): mordent A-G-A repeated at three
 // descending octaves, middle repetition abbreviated, as in the real score
-Note melodieToccata[] = {
+Note melodyToccata[] = {
   // phrase 1, octave 5 - mordent + full descending run
   {AN5, 3}, {G5, 3}, {AN5, 3}, {R, 3},
-  {G5, 1}, {F5, 1}, {E5, 1}, {D5, 1}, {CIS5, 3}, {D5, 3}, {R, 6},
+  {G5, 1}, {F5, 1}, {E5, 1}, {D5, 1}, {CIS5, 3}, {D5, 3}, {R, 3},
 
-  // phrase 2, octave 4 - mordent + abbreviated tag
-  {AN4, 3}, {G4, 3}, {AN4, 3}, {R, 3},
-  {E4, 3}, {F4, 3}, {CIS4, 3}, {D4, 3}, {R, 6},
-
-  // phrase 3, octave 3 - mordent + full descending run
+  // phrase 2, octave 3 - mordent + full descending run
   {AN3, 3}, {G3, 3}, {AN3, 3}, {R, 3},
   {G3, 1}, {F3, 1}, {E3, 1}, {D3, 1}, {CIS3, 3}, {D3, 3},
 };
@@ -210,7 +206,7 @@ Note melodieToccata[] = {
 // (not verified against an outside source like the mordent sequence
 // above): a rising flourish building tension across two octaves, then
 // the matching descending run back down to a held low pedal D
-Note melodieToccataExtended[] = {
+Note melodyToccataExtended[] = {
   {AN5, 3}, {G5, 3}, {AN5, 3}, {R, 3},
   {G5, 1}, {F5, 1}, {E5, 1}, {D5, 1}, {CIS5, 3}, {D5, 3}, {R, 6},
 
@@ -228,34 +224,34 @@ Note melodieToccataExtended[] = {
 };
 
 // Grieg - In the Hall of the Mountain King, simplified ostinato
-Note melodieMountainKing[] = {
+Note melodyMountainKing[] = {
   {B4, 1}, {D5, 1}, {E5, 1}, {FIS5, 1}, {E5, 1}, {D5, 1}, {B4, 1}, {FIS5, 1}, {R, 1},
   {C5, 1}, {D5, 1}, {E5, 1}, {F5, 1}, {E5, 1}, {D5, 1}, {C5, 1}, {F5, 1}, {R, 1},
 };
 
 // Saint-Saens - Danse Macabre, devil's-fiddle tritone + descending run
-Note melodieDanseMacabre[] = {
+Note melodyDanseMacabre[] = {
   {AN4, 1}, {DIS5, 3}, {R, 1},
   {G5, 1}, {F5, 1}, {E5, 1}, {D5, 1}, {CIS5, 1}, {C5, 1}, {B4, 1}, {AN4, 3}, {R, 2},
 };
 
 // Chopin - Funeral March, famous rhythm, low register
-Note melodieFuneral[] = {
+Note melodyFuneral[] = {
   {C4, 2}, {C4, 2}, {DIS4, 4}, {R, 2},
   {C4, 2}, {C4, 2}, {CIS4, 4}, {R, 4},
 };
 
 struct MelodySet { Note *notes; uint8_t count; };
 MelodySet allMelodies[] = {
-  {melodieOrig, sizeof(melodieOrig) / sizeof(Note)},
-  {melodieCreep, sizeof(melodieCreep) / sizeof(Note)},
-  {melodieTritone, sizeof(melodieTritone) / sizeof(Note)},
-  {melodieCackle, sizeof(melodieCackle) / sizeof(Note)},
-  {melodieToccata, sizeof(melodieToccata) / sizeof(Note)},
-  {melodieToccataExtended, sizeof(melodieToccataExtended) / sizeof(Note)},
-  {melodieMountainKing, sizeof(melodieMountainKing) / sizeof(Note)},
-  {melodieDanseMacabre, sizeof(melodieDanseMacabre) / sizeof(Note)},
-  {melodieFuneral, sizeof(melodieFuneral) / sizeof(Note)},
+  {melodyOrig, sizeof(melodyOrig) / sizeof(Note)},
+  {melodyCreep, sizeof(melodyCreep) / sizeof(Note)},
+  {melodyTritone, sizeof(melodyTritone) / sizeof(Note)},
+  {melodyCackle, sizeof(melodyCackle) / sizeof(Note)},
+  {melodyToccata, sizeof(melodyToccata) / sizeof(Note)},
+  {melodyToccataExtended, sizeof(melodyToccataExtended) / sizeof(Note)},
+  {melodyMountainKing, sizeof(melodyMountainKing) / sizeof(Note)},
+  {melodyDanseMacabre, sizeof(melodyDanseMacabre) / sizeof(Note)},
+  {melodyFuneral, sizeof(melodyFuneral) / sizeof(Note)},
 };
 #define NUM_MELODIES 9
 
@@ -393,23 +389,25 @@ void loop() {
 
   if ((long)(now - nextSonar) >= 0) {
     digitalWrite(TRIG_PIN, LOW);
-    delayMicroseconds(5);
+    delayMicroseconds(15000);
     digitalWrite(TRIG_PIN, HIGH);
     delayMicroseconds(10);
     digitalWrite(TRIG_PIN, LOW);
 
     unsigned long duration = pulseIn(ECHO_PIN, HIGH, 30000);
+    unsigned long sonarWait = 500;
     if (duration > 0) {
       float distance = (duration * 0.0343) / 2.0;
       Serial.print(distance);
       Serial.println(" cm");
       if (distance < 50) {
         playMelody();
-        delay(150);
+        // time 15s - 15000ms make it long as you want :))))
+        sonarWait = 15000;
       }
     } else {
-      Serial.println("Mimo dosah");
+      Serial.println("Out of range");
     }
-    nextSonar = millis() + 500;
+    nextSonar = millis() + sonarWait;
   }
 }
