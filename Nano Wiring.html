@@ -1,0 +1,419 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Nano Wiring</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #eef1ee;
+    --surface: #ffffff;
+    --surface-2: #e6ebe4;
+    --ink: #1b2420;
+    --ink-dim: #5b6660;
+    --line: #d7ddd4;
+    --accent: #1f6f4a;
+    --accent-soft: #dfeee6;
+
+    --board-fill: #0f3a63;
+    --board-line: #0a2745;
+    --board-silk: #eef3ee;
+    --board-silk-dim: #9fb9d4;
+    --connector: #c9a84a;
+    --screen: #0b0f0d;
+    --glow: #bff3ea;
+
+    --wire-gnd: #20262a;
+    --wire-power: #9c2318;
+    --wire-scl: #14498a;
+    --wire-sda: #0b5c56;
+    --wire-din: #8a4a06;
+    --wire-rst: #6a3fa0;
+    --wire-dc: #a3216b;
+    --wire-cs: #45536b;
+    --wire-trig: #4a7a1f;
+    --wire-echo: #0a7a8a;
+    --wire-buzz: #a1305c;
+
+    --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12161a;
+      --surface: #1a2024;
+      --surface-2: #212a28;
+      --ink: #e6ebe7;
+      --ink-dim: #97a29c;
+      --line: #2b3530;
+      --accent: #4fae7e;
+      --accent-soft: #1f3329;
+
+      --wire-gnd: #cfd6d1;
+      --wire-power: #ff8a7e;
+      --wire-scl: #7db8ff;
+      --wire-sda: #5fd6cd;
+      --wire-din: #ffb45e;
+      --wire-rst: #c9a6ff;
+      --wire-dc: #ff8cc6;
+      --wire-cs: #aab8cf;
+      --wire-trig: #a8e07a;
+      --wire-echo: #5fd8ea;
+      --wire-buzz: #ff8fb5;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12161a;
+    --surface: #1a2024;
+    --surface-2: #212a28;
+    --ink: #e6ebe7;
+    --ink-dim: #97a29c;
+    --line: #2b3530;
+    --accent: #4fae7e;
+    --accent-soft: #1f3329;
+
+    --wire-gnd: #cfd6d1;
+    --wire-power: #ff8a7e;
+    --wire-scl: #7db8ff;
+    --wire-sda: #5fd6cd;
+    --wire-din: #ffb45e;
+    --wire-rst: #c9a6ff;
+    --wire-dc: #ff8cc6;
+    --wire-cs: #aab8cf;
+    --wire-trig: #a8e07a;
+    --wire-echo: #5fd8ea;
+    --wire-buzz: #ff8fb5;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+  }
+
+  .page {
+    max-width: 960px;
+    margin-inline: auto;
+    padding-inline: 20px;
+    padding-block: 56px 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  header { display: flex; flex-direction: column; gap: 10px; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(28px, 5vw, 38px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .dek {
+    margin: 0;
+    max-width: 62ch;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-dim);
+  }
+
+  .callouts { display: flex; flex-direction: column; gap: 12px; }
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 14px 18px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .callout strong { font-weight: 600; }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--surface-2);
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
+  .diagram-figure {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .diagram-scroll { overflow-x: auto; }
+  .diagram-scroll svg {
+    display: block;
+    width: 100%;
+    min-width: 800px;
+    height: auto;
+  }
+  figcaption {
+    margin-top: 14px;
+    font-size: 14px;
+    color: var(--ink-dim);
+  }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 26px; }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .swatch { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+
+  .notes h2 { margin: 0 0 16px; font-size: 21px; font-weight: 600; }
+  .notes ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .notes li { display: flex; gap: 12px; font-size: 16px; line-height: 1.6; }
+  .notes li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-top: 8px;
+    background: var(--accent);
+    flex: none;
+    border-radius: 2px;
+  }
+
+  @media (max-width: 600px) {
+    .page { padding-block: 36px 48px; gap: 28px; }
+  }
+</style>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Pico &rarr; Nano</p>
+    <h1>Nano Wiring</h1>
+    <p class="dek">Round GC9A01 display, WS2812B-style ring, HC-SR04 ultrasonic sensor, and a piezo buzzer, all on one classic Arduino Nano (ATmega328P). Confirmed from the board itself: Mini-USB, single ATmega328P chip, no wireless module.</p>
+  </header>
+
+  <div class="callouts">
+    <p class="callout"><strong>2KB RAM</strong> &mdash; can't hold a full 240&times;240 framebuffer (115KB). Draw window-by-window with <code>Adafruit_GC9A01A</code> + <code>Adafruit_GFX</code>, same direct-draw approach used on the Pico, not a buffered one.</p>
+    <p class="callout"><strong>5V logic confirmed fine</strong> for the display per its packaging, and native for the sensor and buzzer too &mdash; no level shifter needed anywhere on this board.</p>
+    <p class="callout"><strong>Full rewrite</strong> &mdash; Arduino uses C++ (Arduino IDE/CLI), not MicroPython. None of the Pico scripts carry over as-is.</p>
+  </div>
+
+  <figure class="diagram-figure">
+    <div class="diagram-scroll">
+      <svg viewBox="0 0 1100 900" role="img" aria-label="Wiring diagram: an Arduino Nano connects to a round SPI display on pins D8 through D13, a WS2812B LED ring on pin D6, an HC-SR04 ultrasonic sensor on pins D4 and D5, and a piezo buzzer on pin D7, all sharing 5V and ground.">
+        <rect x="0" y="0" width="1100" height="900" fill="var(--surface)" />
+
+        <!-- Round LCD panel -->
+        <text x="135" y="160" text-anchor="middle" font-family="var(--font-sans)" font-size="18" font-weight="700" fill="var(--ink)">Round LCD</text>
+        <text x="135" y="178" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--ink-dim)">GC9A01 &middot; SPI &middot; 7-pin</text>
+        <rect x="40" y="190" width="190" height="390" rx="10" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.5" />
+        <rect x="75" y="215" width="120" height="65" rx="6" fill="var(--screen)" stroke="var(--board-line)" stroke-width="1.5" />
+        <rect x="100" y="235" width="14" height="26" rx="7" fill="var(--glow)" />
+        <rect x="156" y="235" width="14" height="26" rx="7" fill="var(--glow)" />
+
+        <!-- LED ring panel -->
+        <text x="965" y="160" text-anchor="middle" font-family="var(--font-sans)" font-size="18" font-weight="700" fill="var(--ink)">LED Ring</text>
+        <text x="965" y="178" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--ink-dim)">WS2812B-style &middot; RGB</text>
+        <rect x="870" y="190" width="190" height="390" rx="10" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.5" />
+        <circle cx="965" cy="247" r="32" fill="none" stroke="var(--accent)" stroke-width="9" />
+        <circle cx="997" cy="247" r="4" fill="var(--wire-power)" />
+        <circle cx="988" cy="224" r="4" fill="var(--wire-scl)" />
+        <circle cx="965" cy="215" r="4" fill="var(--wire-sda)" />
+        <circle cx="942" cy="224" r="4" fill="var(--wire-din)" />
+        <circle cx="933" cy="247" r="4" fill="var(--wire-power)" />
+        <circle cx="942" cy="270" r="4" fill="var(--wire-scl)" />
+        <circle cx="965" cy="279" r="4" fill="var(--wire-sda)" />
+        <circle cx="988" cy="270" r="4" fill="var(--wire-din)" />
+
+        <!-- Ultrasonic sensor panel -->
+        <text x="135" y="588" text-anchor="middle" font-family="var(--font-sans)" font-size="18" font-weight="700" fill="var(--ink)">Ultrasonic</text>
+        <text x="135" y="605" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--ink-dim)">HC-SR04 &middot; 4-pin</text>
+        <rect x="40" y="616" width="190" height="224" rx="10" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.5" />
+        <circle cx="95" cy="655" r="22" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5" />
+        <circle cx="95" cy="655" r="13" fill="none" stroke="var(--ink-dim)" stroke-width="1.5" />
+        <circle cx="175" cy="655" r="22" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5" />
+        <circle cx="175" cy="655" r="13" fill="none" stroke="var(--ink-dim)" stroke-width="1.5" />
+
+        <!-- Buzzer panel -->
+        <text x="965" y="588" text-anchor="middle" font-family="var(--font-sans)" font-size="18" font-weight="700" fill="var(--ink)">Buzzer</text>
+        <text x="965" y="605" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--ink-dim)">passive piezo &middot; 2-pin</text>
+        <rect x="870" y="616" width="190" height="164" rx="10" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.5" />
+        <circle cx="965" cy="660" r="30" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5" />
+        <circle cx="965" cy="660" r="18" fill="none" stroke="var(--ink-dim)" stroke-width="1.5" />
+
+        <!-- Nano board -->
+        <rect x="600" y="95" width="30" height="20" fill="var(--connector)" stroke="var(--board-line)" stroke-width="1.5" />
+        <rect x="490" y="95" width="180" height="700" rx="10" fill="var(--board-fill)" stroke="var(--board-line)" stroke-width="2" />
+        <circle cx="520" cy="150" r="7" fill="var(--board-silk)" stroke="var(--board-line)" stroke-width="1.5" />
+        <text x="533" y="153" font-family="var(--font-mono)" font-size="8.5" fill="var(--board-silk-dim)">RESET</text>
+        <text x="580" y="180" text-anchor="middle" font-family="var(--font-sans)" font-size="19" font-weight="700" fill="var(--board-silk)">Nano</text>
+        <text x="580" y="198" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--board-silk-dim)">ATmega328P &middot; 5V</text>
+        <rect x="555" y="250" width="50" height="50" fill="var(--board-line)" transform="rotate(45 580 275)" />
+        <circle cx="562" cy="257" r="2.5" fill="var(--board-silk-dim)" />
+
+        <!-- wires: LCD side -->
+        <line x1="230" y1="320" x2="490" y2="320" stroke="var(--wire-gnd)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="358" x2="490" y2="358" stroke="var(--wire-power)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="396" x2="490" y2="396" stroke="var(--wire-scl)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="434" x2="490" y2="434" stroke="var(--wire-sda)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="472" x2="490" y2="472" stroke="var(--wire-rst)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="510" x2="490" y2="510" stroke="var(--wire-dc)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="548" x2="490" y2="548" stroke="var(--wire-cs)" stroke-width="3" stroke-linecap="round" />
+
+        <!-- wires: ring side -->
+        <line x1="670" y1="350" x2="870" y2="350" stroke="var(--wire-power)" stroke-width="3" stroke-linecap="round" />
+        <line x1="670" y1="410" x2="870" y2="410" stroke="var(--wire-gnd)" stroke-width="3" stroke-linecap="round" />
+        <line x1="670" y1="470" x2="870" y2="470" stroke="var(--wire-din)" stroke-width="3" stroke-linecap="round" />
+
+        <!-- wires: ultrasonic side -->
+        <line x1="230" y1="700" x2="490" y2="700" stroke="var(--wire-power)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="730" x2="490" y2="730" stroke="var(--wire-trig)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="760" x2="490" y2="760" stroke="var(--wire-echo)" stroke-width="3" stroke-linecap="round" />
+        <line x1="230" y1="790" x2="490" y2="790" stroke="var(--wire-gnd)" stroke-width="3" stroke-linecap="round" />
+
+        <!-- wires: buzzer side -->
+        <line x1="670" y1="730" x2="870" y2="730" stroke="var(--wire-buzz)" stroke-width="3" stroke-linecap="round" />
+        <line x1="670" y1="760" x2="870" y2="760" stroke="var(--wire-gnd)" stroke-width="3" stroke-linecap="round" />
+
+        <!-- pads: LCD side -->
+        <circle cx="230" cy="320" r="4.5" fill="var(--wire-gnd)" />
+        <circle cx="230" cy="358" r="4.5" fill="var(--wire-power)" />
+        <circle cx="230" cy="396" r="4.5" fill="var(--wire-scl)" />
+        <circle cx="230" cy="434" r="4.5" fill="var(--wire-sda)" />
+        <circle cx="230" cy="472" r="4.5" fill="var(--wire-rst)" />
+        <circle cx="230" cy="510" r="4.5" fill="var(--wire-dc)" />
+        <circle cx="230" cy="548" r="4.5" fill="var(--wire-cs)" />
+        <circle cx="490" cy="320" r="4.5" fill="var(--wire-gnd)" />
+        <circle cx="490" cy="358" r="4.5" fill="var(--wire-power)" />
+        <circle cx="490" cy="396" r="4.5" fill="var(--wire-scl)" />
+        <circle cx="490" cy="434" r="4.5" fill="var(--wire-sda)" />
+        <circle cx="490" cy="472" r="4.5" fill="var(--wire-rst)" />
+        <circle cx="490" cy="510" r="4.5" fill="var(--wire-dc)" />
+        <circle cx="490" cy="548" r="4.5" fill="var(--wire-cs)" />
+
+        <!-- pads: ring side -->
+        <circle cx="670" cy="350" r="4.5" fill="var(--wire-power)" />
+        <circle cx="670" cy="410" r="4.5" fill="var(--wire-gnd)" />
+        <circle cx="670" cy="470" r="4.5" fill="var(--wire-din)" />
+        <circle cx="870" cy="350" r="4.5" fill="var(--wire-power)" />
+        <circle cx="870" cy="410" r="4.5" fill="var(--wire-gnd)" />
+        <circle cx="870" cy="470" r="4.5" fill="var(--wire-din)" />
+
+        <!-- pads: ultrasonic side -->
+        <circle cx="230" cy="700" r="4.5" fill="var(--wire-power)" />
+        <circle cx="230" cy="730" r="4.5" fill="var(--wire-trig)" />
+        <circle cx="230" cy="760" r="4.5" fill="var(--wire-echo)" />
+        <circle cx="230" cy="790" r="4.5" fill="var(--wire-gnd)" />
+        <circle cx="490" cy="700" r="4.5" fill="var(--wire-power)" />
+        <circle cx="490" cy="730" r="4.5" fill="var(--wire-trig)" />
+        <circle cx="490" cy="760" r="4.5" fill="var(--wire-echo)" />
+        <circle cx="490" cy="790" r="4.5" fill="var(--wire-gnd)" />
+
+        <!-- pads: buzzer side -->
+        <circle cx="670" cy="730" r="4.5" fill="var(--wire-buzz)" />
+        <circle cx="670" cy="760" r="4.5" fill="var(--wire-gnd)" />
+        <circle cx="870" cy="730" r="4.5" fill="var(--wire-buzz)" />
+        <circle cx="870" cy="760" r="4.5" fill="var(--wire-gnd)" />
+
+        <!-- labels: LCD side (module pin names) -->
+        <text x="240" y="312" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-gnd)">GND</text>
+        <text x="240" y="350" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-power)">VCC</text>
+        <text x="240" y="388" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-scl)">SCL</text>
+        <text x="240" y="426" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-sda)">SDA</text>
+        <text x="240" y="464" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-rst)">RST</text>
+        <text x="240" y="502" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-dc)">DC</text>
+        <text x="240" y="540" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-cs)">CS</text>
+
+        <!-- labels: Nano side, facing LCD -->
+        <text x="480" y="312" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-gnd)">GND</text>
+        <text x="480" y="350" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-power)">5V</text>
+        <text x="480" y="388" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-scl)">D13 &middot; SCK</text>
+        <text x="480" y="426" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-sda)">D11 &middot; MOSI</text>
+        <text x="480" y="464" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-rst)">D8 &middot; RST</text>
+        <text x="480" y="502" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-dc)">D9 &middot; DC</text>
+        <text x="480" y="540" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-cs)">D10 &middot; CS</text>
+
+        <!-- labels: Nano side, facing ring -->
+        <text x="680" y="342" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-power)">5V</text>
+        <text x="680" y="402" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-gnd)">GND</text>
+        <text x="680" y="462" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-din)">D6</text>
+
+        <!-- labels: ring side (module pin names) -->
+        <text x="860" y="342" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-power)">5V</text>
+        <text x="860" y="402" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-gnd)">GND</text>
+        <text x="860" y="462" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-din)">DI</text>
+        <text x="965" y="500" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-dim)">also has GND &middot; DO &middot; 5V out &mdash;</text>
+        <text x="965" y="514" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-dim)">skip it, that's for chaining</text>
+
+        <!-- labels: ultrasonic side (module pin names) -->
+        <text x="240" y="692" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-power)">VCC</text>
+        <text x="240" y="722" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-trig)">TRIG</text>
+        <text x="240" y="752" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-echo)">ECHO</text>
+        <text x="240" y="782" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-gnd)">GND</text>
+
+        <!-- labels: Nano side, facing ultrasonic -->
+        <text x="480" y="692" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-power)">5V</text>
+        <text x="480" y="722" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-trig)">D4 &middot; TRIG</text>
+        <text x="480" y="752" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-echo)">D5 &middot; ECHO</text>
+        <text x="480" y="782" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-gnd)">GND</text>
+
+        <!-- labels: Nano side, facing buzzer -->
+        <text x="680" y="722" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-buzz)">D7 &middot; SIGNAL</text>
+        <text x="680" y="752" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-gnd)">GND</text>
+
+        <!-- labels: buzzer side (module pin names) -->
+        <text x="860" y="722" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-buzz)">+</text>
+        <text x="860" y="752" text-anchor="end" font-family="var(--font-mono)" font-size="14" font-weight="600" fill="var(--wire-gnd)">&minus;</text>
+      </svg>
+    </div>
+    <figcaption>D13/D11 are the Nano's hardware SPI (SCK/MOSI); D8&ndash;D10 are plain GPIO for RST/DC/CS. D6 drives the ring. D4/D5 fire and read the sensor's ping. D7 drives the buzzer. Every GND shown is the same net.</figcaption>
+  </figure>
+
+  <div class="legend">
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-gnd)"></span>GND</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-power)"></span>Power &mdash; 5V</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-scl)"></span>SCK &mdash; SPI clock</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-sda)"></span>MOSI &mdash; SPI data</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-rst)"></span>RST &mdash; reset</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-dc)"></span>DC &mdash; data/command</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-cs)"></span>CS &mdash; chip select</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-din)"></span>DI &mdash; LED data-in</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-trig)"></span>TRIG &mdash; sensor ping out</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-echo)"></span>ECHO &mdash; sensor pulse back</div>
+    <div class="legend-item"><span class="swatch" style="background:var(--wire-buzz)"></span>SIGNAL &mdash; buzzer tone</div>
+  </div>
+
+  <section class="notes">
+    <h2>Before you power it on</h2>
+    <ul>
+      <li>Every GND pin is the same net &mdash; every part here can land on whichever GND is closest, they don't need to share one physical pin.</li>
+      <li><strong>Ground first, always double-check it.</strong> A loose GND reads as "everything's broken" with no error anywhere &mdash; the single most time-consuming fault to chase on this whole build.</li>
+      <li>Wire the ring's <strong>DI</strong> side only (GND &middot; DI &middot; 5V). Leave GND &middot; DO &middot; 5V alone.</li>
+      <li>HC-SR04's TRIG and ECHO aren't interchangeable &mdash; TRIG is an output from the Nano, ECHO is an input to it. Swapped, you'll get silence or garbage readings, no error.</li>
+      <li>Passive piezo buzzer has no polarity &mdash; either leg to D7, the other to GND, it doesn't matter which way round.</li>
+      <li>Nano's onboard 3.3V regulator is weak (~50mA) &mdash; everything here runs off <strong>5V</strong>, not 3V3.</li>
+      <li>D13 also drives the Nano's onboard <code>L</code> LED &mdash; harmless here, but expect it to flicker along with SCK traffic.</li>
+      <li>Unplug USB before changing wiring, check for shorts before plugging back in.</li>
+    </ul>
+  </section>
+
+</div>
+
+</body></html>
